@@ -1,0 +1,12 @@
+# Personal project notes
+/ROADMAP.md
+
+# Local VS Code settings
+.vscode/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Debug logs
+*.log

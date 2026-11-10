@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "PinForGPT",
+  "version": "1.1.0",
+  "description": "Pin and manage your favorite ChatGPT conversations for quick access",
+  "icons": {
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*"],
+      "js": [
+        "platform/chatgpt-adapter.js",
+        "ui/i18n.js",
+        "ui/icons.js",
+        "ui/sidebar-view.js",
+        "ui/native-menu-view.js",
+        "content.js"
+      ],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}
