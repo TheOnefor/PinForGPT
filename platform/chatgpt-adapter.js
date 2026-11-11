@@ -112,6 +112,23 @@
       return normalizeChatUrl(this.#win.location.href, this.#win.location.href);
     }
 
+    // Read-only information for the extension popup. If the sidebar is absent,
+    // the popup still has a usable URL and can fall back to the tab title.
+    getCurrentChatDetails() {
+      const url = this.getCurrentChatUrl();
+      if (!url) return null;
+      const sidebar = this.findSidebar();
+      if (sidebar) {
+        for (const link of sidebar.querySelectorAll(SELECTORS.chatLink)) {
+          if (normalizeChatUrl(link.href, this.#win.location.href) !== url) continue;
+          const chat = this.#chatFromLink(link);
+          if (chat) return chat;
+        }
+      }
+      const title = this.#doc.title?.trim();
+      return { url, title: title && title !== "ChatGPT" ? title : null };
+    }
+
     // Works for a link, a row, or any element inside a row.
     getChatFromElement(element) {
       if (!element || element.nodeType !== 1) return null;

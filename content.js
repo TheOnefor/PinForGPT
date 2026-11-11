@@ -73,6 +73,13 @@
   });
   adapter.onRouteChange(({ url }) => sidebar.setActiveUrl(url));
   adapter.onChatMenuOpen(context => nativeMenu.show(context));
+  // Optional metadata enrichment for the popup. No data writes or DOM changes.
+  chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+    if (message?.type !== "popup:getCurrentChat") return false;
+    sendResponse({ ok: true, chat: adapter.getCurrentChatDetails() });
+    return false;
+  });
+
   adapter.start();
 
   refresh().catch(() => {}); // Error is shown in UI; do not generate unhandled rejection.
