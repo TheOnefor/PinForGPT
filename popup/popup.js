@@ -51,6 +51,28 @@
       const existing = state.items.some(item => normalizeChatUrl(item.url) === chat.url);
       if (!existing) await sendStore({ type: "store:pin", chat });
       await refresh();
+    },
+    onImport: () => chrome.tabs.create({ url: chrome.runtime.getURL("popup/import.html") }),
+    onExport: async () => {
+      // Read fresh state, not the possibly outdated popup render.
+      const saved = await sendStore({ type: "store:getState" });
+      const now = new Date();
+      const backup = ns.Backup.create(saved, chrome.runtime.getManifest().version, now);
+      const data = ns.Backup.stringify(backup);
+      const objectUrl = URL.createObjectURL(new Blob([data], {
+        type: "application/json;charset=utf-8"
+      }));
+      try {
+        const link = document.createElement("a");
+        link.href = objectUrl;
+        link.download = `PinForGPT-backup-${now.toISOString().slice(0, 10)}.json`;
+        document.body.append(link);
+        link.click();
+        link.remove();
+      } finally {
+        // Keep the blob URL alive long enough for the browser to start the download.
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 15000);
+      }
     }
   });
 

@@ -14,6 +14,10 @@
     #onOpen;
     #onRemove;
     #onAddCurrent;
+    #onExport;
+    #onImport;
+    #exportButton = document.getElementById("export-backup");
+    #importButton = document.getElementById("import-backup");
     #list = document.getElementById("chat-list");
     #menu = document.getElementById("row-menu");
     #remove = document.getElementById("menu-remove");
@@ -24,10 +28,12 @@
     #statusClose = document.getElementById("status-close");
     #statusTimer = null;
 
-    constructor({ onOpen, onRemove, onAddCurrent }) {
+    constructor({ onOpen, onRemove, onAddCurrent, onExport, onImport }) {
       this.#onOpen = onOpen;
       this.#onRemove = onRemove;
       this.#onAddCurrent = onAddCurrent;
+      this.#onExport = onExport;
+      this.#onImport = onImport;
       document.documentElement.lang = ns.I18n.language();
       document.getElementById("brand-icon").innerHTML = ns.Icons.star();
       document.getElementById("version").textContent = `v${chrome.runtime.getManifest().version}`;
@@ -37,7 +43,21 @@
         button.textContent = t(key);
         button.addEventListener("click", () => this.#activateTab(name));
       }
-      this.#placeholder("backups", "popupBackupsTitle", "popupBackupsPlaceholder");
+      document.getElementById("backup-title").textContent = t("popupBackupsTitle");
+      document.getElementById("backup-explanation").textContent = t("popupBackupExplanation");
+      this.#exportButton.textContent = t("popupExportButton");
+      document.getElementById("export-hint").textContent = t("popupExportHint");
+      document.getElementById("import-heading").textContent = t("popupImportHeading");
+      document.getElementById("import-pending").textContent = t("popupImportPending");
+      this.#importButton.textContent = t("popupImportButton");
+      this.#importButton.addEventListener("click", async () => {
+        if (this.#busy) return;
+        await this.#execute(() => this.#onImport(), "popupImportOpened", "popupImportOpenFailed");
+      });
+      this.#exportButton.addEventListener("click", async () => {
+        if (this.#busy) return;
+        await this.#execute(() => this.#onExport(), "popupExportStarted", "popupExportFailed");
+      });
       this.#placeholder("icons", "popupIconsTitle", "popupIconsPlaceholder");
       this.#remove.textContent = t("removeFavorite");
       this.#statusClose.setAttribute("aria-label", t("popupCloseNotification"));
@@ -158,8 +178,11 @@
       this.#menuOwner = null;
     }
 
-    async #execute(action, successKey) {
+    async #execute(action, successKey, errorKey = "operationFailed") {
+      if (this.#busy) return;
       this.#busy = true;
+      this.#exportButton.disabled = true;
+      this.#importButton.disabled = true;
       this.#currentButton.disabled = true;
       this.#remove.disabled = true;
       this.#closeMenu();
@@ -168,9 +191,11 @@
         this.showStatus(t(successKey));
       } catch (error) {
         console.error("[PinForGPT popup] Action failed:", error);
-        this.showStatus(t("operationFailed"), true);
+        this.showStatus(t(errorKey), true);
       } finally {
         this.#busy = false;
+        this.#exportButton.disabled = false;
+        this.#importButton.disabled = false;
         this.#remove.disabled = false;
         this.setCurrent(this.#current);
       }

@@ -1,0 +1,34 @@
+:root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: #141619; color: #f0f1f3; font-size: 14px; }
+button { font: inherit; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+.import-app { width: min(100% - 32px, 560px); margin: 36px auto; padding: 25px; background: #1c2025; border: 1px solid #343941; border-radius: 18px; }
+.header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 18px; border-bottom: 1px solid #323841; }
+.brand { font-weight: 700; font-size: 17px; }
+.version { color: #969da8; font-size: 12px; }
+h1 { margin: 21px 0 9px; font-size: 22px; }
+.intro { margin: 0 0 20px; color: #aeb4bd; font-size: 13px; line-height: 1.6; }
+.dropzone { border: 1.5px dashed #606978; border-radius: 13px; min-height: 174px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 13px; padding: 18px; text-align: center; background: #20262e; }
+.dropzone.is-dragover { border-color: #8bbae9; background: #28394b; }
+.drop-icon { color: #9cacbf; font-size: 30px; }
+.dropzone strong { font-size: 14px; }
+.button { min-height: 38px; border-radius: 9px; padding: 9px 16px; }
+.button.outline { background: #303740; border: 1px solid #555d69; color: #f5f7f9; }
+.button.outline:hover { background: #3c4550; }
+.button.primary { width: 100%; background: #376da9; color: #fff; border: 1px solid #5a88bf; font-weight: 600; }
+.button.primary:hover:not(:disabled) { background: #427fbe; }
+.selection { padding-top: 20px; }
+.filename { font-size: 13px; color: #dce1e8; overflow-wrap: anywhere; font-weight: 600; }
+.summary { font-size: 13px; line-height: 1.6; color: #b9c0ca; }
+.modes { border: 0; margin: 20px 0 12px; padding: 0; display: grid; gap: 10px; }
+.modes label { display: flex; align-items: flex-start; gap: 10px; background: #272d35; border-radius: 9px; padding: 13px; cursor: pointer; line-height: 1.5; }
+.modes input { margin-top: 4px; accent-color: #8dbbec; }
+.warning { padding: 12px; border: 1px solid #815e45; background: #3c2e26; color: #f4c5a8; border-radius: 9px; font-size: 13px; line-height: 1.55; }
+.feedback { margin-top: 16px; padding: 12px 14px; background: #24352d; color: #bbebcb; border-radius: 9px; line-height: 1.5; overflow-wrap: anywhere; }
+.feedback.error { background: #3b2528; color: #ffbcc1; }
+.success-note { margin: 12px 0 0; color: #aeb4bd; font-size: 13px; line-height: 1.5; }
+#again { margin-top: 15px; }
+:focus-visible { outline: 2px solid #8dbbec; outline-offset: 2px; }
+@media (max-width: 480px) { .import-app { margin: 12px auto; padding: 17px; } }

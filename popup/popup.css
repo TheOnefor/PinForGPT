@@ -33,6 +33,12 @@ button:disabled { opacity: .54; cursor: default; }
 .placeholder-icon { display: grid; place-items: center; margin: 0 auto 13px; font-size: 26px; height: 52px; width: 52px; border: 1px solid #3a4049; border-radius: 15px; color: #c9cdd3; background: #24282f; }
 .placeholder h2 { font-size: 15px; margin: 0 0 10px; }
 .placeholder p { color: #9ea5af; font-size: 12px; line-height: 1.6; margin: 0; }
+.backup-tools { padding: 18px 4px 14px; }
+.backup-tools h2 { margin: 0 0 9px; font-size: 15px; }
+.backup-tools h3 { margin: 0 0 8px; font-size: 13px; }
+.backup-description { color: #aeb3bd; line-height: 1.6; margin: 0 0 17px; font-size: 12px; }
+.backup-hint { color: #9299a4; font-size: 11px; line-height: 1.5; margin: 9px 4px 0; }
+.backup-rule { height: 1px; background: #30343b; margin: 21px 0 17px; }
 .status { margin: 0 14px; padding: 9px 10px; background: #24352d; border-radius: 8px; color: #bbebcb; display: flex; align-items: center; gap: 9px; }
 .status-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .status-close { flex: none; display: grid; place-items: center; width: 25px; height: 25px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: inherit; font-size: 21px; line-height: 1; opacity: .75; }

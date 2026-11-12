@@ -30,7 +30,16 @@
         <div class="chat-list" id="chat-list" aria-live="polite"></div>
       </section>
       <section id="panel-backups" class="panel" role="tabpanel" aria-labelledby="tab-backups" hidden>
-        <div class="placeholder" id="backups-placeholder"></div>
+        <div class="backup-tools">
+          <h2 id="backup-title"></h2>
+          <p id="backup-explanation" class="backup-description"></p>
+          <button type="button" id="export-backup" class="primary-action"></button>
+          <p id="export-hint" class="backup-hint"></p>
+          <div class="backup-rule"></div>
+          <h3 id="import-heading"></h3>
+          <p id="import-pending" class="backup-description"></p>
+          <button type="button" id="import-backup" class="primary-action"></button>
+        </div>
       </section>
       <section id="panel-icons" class="panel" role="tabpanel" aria-labelledby="tab-icons" hidden>
         <div class="placeholder" id="icons-placeholder"></div>
@@ -47,6 +56,7 @@
   </div>
   <script src="../ui/i18n.js"></script>
   <script src="../ui/icons.js"></script>
+  <script src="../core/backup.js"></script>
   <script src="popup-view.js"></script>
   <script src="popup.js"></script>
 </body>

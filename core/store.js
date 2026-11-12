@@ -21,7 +21,7 @@
     async init() {
       if (this.#ready) return this.#ready;
       this.#ready = this.#load().catch((error) => {
-        this.#ready = null; // Allow retry after fixing corrupt data.
+        this.#ready = null;
         throw error;
       });
       return this.#ready;
@@ -45,13 +45,12 @@
         return;
       }
 
-      // Fresh install: keep an empty in-memory state, no unnecessary storage write.
       this.#state = { schemaVersion: ns.Migrations.SCHEMA_VERSION, items: [] };
     }
 
     async getState() {
       await this.init();
-      return clone(this.#state); // No writable reference to internal state escapes.
+      return clone(this.#state);
     }
 
     #mutate(change) {
@@ -65,8 +64,6 @@
         this.#state = next;
         return clone(this.#state);
       });
-
-      // A rejected mutation must not permanently block all future operations.
       this.#writeQueue = operation.catch(() => {});
       return operation;
     }
@@ -99,6 +96,40 @@
         item.title = title;
         return true;
       });
+    }
+
+    // One serialized operation, even if another tab pins/unpins during import.
+    // No writes occur until the entire source has passed validation.
+    async importBackup(source, mode) {
+      if (mode !== "merge" && mode !== "replace") throw new Error("Unknown import mode.");
+      let report;
+      await this.#mutate((state) => {
+        const { chats, duplicatesInFile, sourceCount } = ns.Backup.parse(source);
+        const before = state.items.length;
+        if (mode === "replace") {
+          state.items = chats;
+          report = {
+            mode, before, sourceCount, duplicatesInFile,
+            added: chats.length, alreadyExisting: 0, after: chats.length
+          };
+          return true;
+        }
+        const seen = new Set(state.items.map(item => ns.Backup.normalizeChatUrl(item.url)).filter(Boolean));
+        let added = 0;
+        let alreadyExisting = 0;
+        for (const item of chats) {
+          if (seen.has(item.url)) { alreadyExisting++; continue; }
+          state.items.push(item);
+          seen.add(item.url);
+          added++;
+        }
+        report = {
+          mode, before, sourceCount, duplicatesInFile,
+          added, alreadyExisting, after: state.items.length
+        };
+        return added > 0;
+      });
+      return report;
     }
   }
 
