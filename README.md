@@ -70,6 +70,23 @@ To remove it, open the menu again and choose **Remove from favorites**. You can 
 - Favorite chat titles update when PinForGPT detects a rename performed through ChatGPT.
 - Conversations inside ChatGPT Projects can also be saved and opened by their supported chat URLs.
 
+### Automatic title synchronization
+
+When you rename a conversation in ChatGPT, PinForGPT can
+automatically update its saved title in Favorites.
+
+- Changes are detected from conversation titles loaded in
+  ChatGPT's interface.
+- Updated names appear in the Favorites sidebar and popup.
+- Synchronization is best-effort, not a background scan of
+  all your ChatGPT conversations.
+- Multiple open ChatGPT tabs may occasionally cause an older
+  title to overwrite a newer one. Refreshing the affected
+  tabs can help restore the correct title.
+
+PinForGPT does not rename conversations in ChatGPT itself.
+Use ChatGPT's native Rename action to change a conversation title.
+
 ## 2. The popup: your Favorites, wherever you are
 
 Click the **PinForGPT icon** in the Chrome toolbar to open the popup. It has three tabs: **Favorites**, **Data**, and **Icons**.
