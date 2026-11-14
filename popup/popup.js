@@ -76,6 +76,9 @@
     }
   });
 
+  // Independent catalog UI: it does not read or mutate favorites.
+  new ns.IconsTabView();
+
   async function refresh() {
     const ticket = ++refreshTicket;
     try {

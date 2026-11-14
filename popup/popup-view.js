@@ -58,7 +58,6 @@
         if (this.#busy) return;
         await this.#execute(() => this.#onExport(), "popupExportStarted", "popupExportFailed");
       });
-      this.#placeholder("icons", "popupIconsTitle", "popupIconsPlaceholder");
       this.#remove.textContent = t("removeFavorite");
       this.#statusClose.setAttribute("aria-label", t("popupCloseNotification"));
       this.#statusClose.title = t("popupCloseNotification");
@@ -131,7 +130,7 @@
         link.className = "chat-link";
         link.href = chat.url;
         link.title = chat.title;
-        link.textContent = chat.title;
+        if (!ns.TitleRenderer.renderInto(link, chat.title)) link.textContent = chat.title;
         link.setAttribute("aria-label", t("popupOpenChat", { title: chat.title }));
         link.addEventListener("click", async (event) => {
           if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey) return;

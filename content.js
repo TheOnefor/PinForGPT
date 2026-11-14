@@ -5,6 +5,49 @@
   const adapter = new ns.ChatGPTAdapter();
   const pending = new Set();
   let requested = 0;
+  let titlesReady = false;
+  let pinnedByUrl = new Map();
+  const queuedTitles = new Map();
+  let syncingTitles = false;
+
+  // One writer is already provided by background Store. Here we queue only
+  // real native title changes, collapsing repeated events for the same URL.
+  async function drainTitleUpdates() {
+    if (syncingTitles) return;
+    syncingTitles = true;
+    try {
+      while (queuedTitles.size) {
+        const [url, title] = queuedTitles.entries().next().value;
+        queuedTitles.delete(url);
+        const existing = pinnedByUrl.get(url);
+        if (!existing || existing.title === title) continue;
+        try {
+          await sendStore({ type: "store:updateTitle", url: existing.url, title });
+          // Avoid duplicate requests while onChanged refresh is still pending.
+          if (pinnedByUrl.get(url) === existing) {
+            pinnedByUrl.set(url, { ...existing, title });
+          }
+        } catch (error) {
+          console.error("[ChatKeeper] Could not sync native chat title:", error);
+        }
+      }
+    } finally {
+      syncingTitles = false;
+      if (queuedTitles.size) drainTitleUpdates();
+    }
+  }
+
+  function syncNativeTitles(chats) {
+    if (!titlesReady) return;
+    for (const chat of chats) {
+      const url = ns.normalizeChatUrl(chat?.url, "https://chatgpt.com/");
+      const existing = pinnedByUrl.get(url);
+      if (!existing || typeof chat.title !== "string" || !chat.title.trim() ||
+          existing.title === chat.title) continue;
+      queuedTitles.set(url, chat.title);
+    }
+    if (queuedTitles.size) drainTitleUpdates();
+  }
 
   function sendStore(message) {
     return new Promise((resolve, reject) => {
@@ -46,13 +89,25 @@
   const sidebar = new ns.SidebarView({
     onRemove: item => performChatAction(item, "remove")
   });
+  const nativeTitles = new ns.NativeTitleView();
   const nativeMenu = new ns.NativeMenuView({
     onToggle: chat => performChatAction(chat, "toggle")
   });
 
   function applyState(state) {
+    pinnedByUrl = new Map();
+    for (const item of state.items) {
+      if (item.type !== "chat") continue;
+      const url = ns.normalizeChatUrl(item.url, "https://chatgpt.com/");
+      if (url) pinnedByUrl.set(url, item);
+    }
     sidebar.setItems(state.items);
     nativeMenu.setState(state);
+    if (!titlesReady) {
+      titlesReady = true;
+      // Exactly one initial scan. Storage updates never re-scan stale tabs.
+      syncNativeTitles(adapter.getLoadedNativeTitles());
+    }
   }
 
   async function refresh() {
@@ -70,8 +125,24 @@
 
   adapter.onSidebarChange(({ point }) => {
     if (point) sidebar.mount(point);
+    nativeTitles.syncSidebar();
   });
-  adapter.onRouteChange(({ url }) => sidebar.setActiveUrl(url));
+  adapter.onRouteChange(({ url }) => {
+    sidebar.setActiveUrl(url);
+    nativeTitles.syncHeader();
+    // On navigation, check the active chat again if its native row is loaded.
+    // Do not use document.title as a sync source (it may be generic or formatted).
+    if (url) {
+      const chat = adapter.getCurrentNativeTitle();
+      if (chat) syncNativeTitles([chat]);
+    }
+  });
+  adapter.onNativeTitlesChange(({ chats, links }) => {
+    // Always read ORIGINAL data before adding our decorative siblings.
+    syncNativeTitles(chats);
+    nativeTitles.syncLinks(links);
+  });
+  adapter.onHeaderChange(() => nativeTitles.syncHeader());
   adapter.onChatMenuOpen(context => nativeMenu.show(context));
   // Optional metadata enrichment for the popup. No data writes or DOM changes.
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {

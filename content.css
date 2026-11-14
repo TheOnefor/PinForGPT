@@ -168,3 +168,29 @@
 @media (prefers-reduced-motion: reduce) {
   [data-chatkeeper-root] .ck-chevron { transition: none; }
 }
+
+/* Native title decoration: ONLY hide React's original while its immediately
+ * adjacent, successful presentation exists. If React removes our sibling,
+ * the real title appears automatically (fail-open, no black hole). */
+#app-shell-sidebar [data-thread-title]:has(+ [data-ck-native-title-view]),
+[data-app-shell-main-titlebar="true"] [data-app-shell-page-header="true"] button[aria-haspopup="menu"] span.min-w-0.truncate:has(+ [data-ck-native-title-view]) {
+  display: none !important;
+}
+#app-shell-sidebar [data-ck-native-title-view],
+[data-app-shell-main-titlebar="true"] [data-ck-native-title-view] {
+  box-sizing: border-box;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font: inherit;
+  color: inherit;
+  line-height: inherit;
+}
+.ck-title-inline-icon {
+  width: 1em; height: 1em; display: inline-block;
+  vertical-align: -0.16em; margin-inline: 0.12em;
+}

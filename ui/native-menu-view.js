@@ -84,8 +84,14 @@
         ns.I18n.t(exists ? "removeFavorite" : "addFavorite");
       this.#button.title = "";
       this.#button.disabled = this.#busy;
-      // Reattach if the native React menu replaced its children while staying open.
-      if (this.#button.parentElement !== menu) menu.append(this.#separator, this.#button);
+      // React may reinsert native items after ours when reusing the same menu.
+      // Keep our separator and action together at the end; otherwise do nothing.
+      if (this.#button.parentElement !== menu ||
+          this.#separator.parentElement !== menu ||
+          this.#separator.nextElementSibling !== this.#button ||
+          menu.lastElementChild !== this.#button) {
+        menu.append(this.#separator, this.#button);
+      }
       if (!this.#keyHandler) {
         this.#keyHandler = (event) => {
           const nativeItems = [...menu.querySelectorAll('[role="menuitem"]')]

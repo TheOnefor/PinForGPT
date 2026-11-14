@@ -21,7 +21,7 @@ button:disabled { opacity: .54; cursor: default; }
 .primary-action:not(:disabled):hover { background: #3e4652; }
 .hint { font-size: 11px; color: #9299a4; margin: 7px 4px 11px; }
 .hint[hidden] { display: none !important; }
-.chat-list { margin-top: 10px; max-height: 322px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #434952 transparent; border: 1px solid #2d3138; border-radius: 12px; background: #191c20; }
+.chat-list { margin-top: 10px; max-height: 322px; overflow-y: auto; scrollbar-width: auto; scrollbar-color: auto; border: 1px solid #2d3138; border-radius: 12px; background: #191c20; }
 .chat-row { min-height: 43px; display: flex; align-items: center; gap: 3px; padding: 4px 6px 4px 9px; border-bottom: 1px solid #282d34; }
 .chat-row:last-child { border-bottom: 0; }
 .chat-row:hover { background: #252a31; }
@@ -52,3 +52,200 @@ button:disabled { opacity: .54; cursor: default; }
 .row-menu button:hover { background: #3a414c; }
 button:focus-visible, a:focus-visible { outline: 2px solid #7dacf9; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+
+/* Icons tab: icon catalog and color palette scroll independently.
+ * Editor/preview and action buttons always remain visible.
+ */
+#panel-icons { height: 445px; padding: 10px 14px 8px; }
+.icon-workspace { display: flex; flex-direction: column; gap: 6px; height: 100%; min-height: 0; }
+.icon-catalog-group { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+.icon-catalog-group h2, .icon-editor h2 { margin: 0 2px; font-size: 12px; font-weight: 600; color: #cdd1d8; }
+.icon-icons-group { flex: 1 1 auto; min-height: 94px; }
+.icon-colors-group { flex: 0 0 72px; }
+.icon-choices-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #58616d #252a31;
+  border: 1px solid #30353e;
+  border-radius: 10px;
+  background: #1a1e23;
+  padding: 7px;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+#icon-icons-list { grid-template-columns: repeat(5, minmax(0, 1fr)); grid-auto-rows: 54px; overflow-y: auto; }
+/* Consistent minimalist scrollbars in Favorites and Icons.
+ * Only the thumb is painted: no track fill or end buttons.
+ */
+#icon-icons-list, #icon-colors-list, .chat-list {
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+#icon-icons-list::-webkit-scrollbar,
+.chat-list::-webkit-scrollbar { width: 7px; }
+#icon-colors-list::-webkit-scrollbar { height: 7px; }
+#icon-icons-list::-webkit-scrollbar-track,
+#icon-colors-list::-webkit-scrollbar-track,
+.chat-list::-webkit-scrollbar-track { background: transparent; }
+#icon-icons-list::-webkit-scrollbar-thumb,
+#icon-colors-list::-webkit-scrollbar-thumb,
+.chat-list::-webkit-scrollbar-thumb { background: #5c6572; border-radius: 100px; }
+#icon-icons-list::-webkit-scrollbar-thumb:hover,
+#icon-colors-list::-webkit-scrollbar-thumb:hover,
+.chat-list::-webkit-scrollbar-thumb:hover { background: #7a8492; }
+#icon-icons-list::-webkit-scrollbar-button,
+#icon-colors-list::-webkit-scrollbar-button,
+.chat-list::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+#icon-icons-list::-webkit-scrollbar-corner,
+#icon-colors-list::-webkit-scrollbar-corner,
+.chat-list::-webkit-scrollbar-corner { background: transparent; }
+/* One horizontal row, sized to ten cells per viewport at the start.
+ * Partial cells remain allowed at arbitrary scroll offsets.
+ * The native scrollbar occupies its own strip below the choices.
+ */
+#icon-colors-list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0;
+  /* No inline padding: ten 10%-wide cells fill the viewport exactly.
+   * Padding made the eleventh cell peek into the trailing 7px. */
+  padding: 0;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+}
+#icon-colors-list .icon-color-choice {
+  flex: 0 0 10%;
+  width: 10%;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  justify-content: center;
+  gap: 2px;
+  padding: 0;
+}
+.icon-icon-choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  min-height: 54px;
+  padding: 5px 2px;
+  color: #d7dbe2;
+  background: #252a31;
+  border: 1px solid #363d47;
+  border-radius: 8px;
+  font-size: 10px;
+}
+.icon-icon-choice span { max-width: 100%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.icon-icon-choice svg { display: block; flex: none; }
+.icon-icon-choice:hover { background: #343b46; }
+.icon-icon-choice[aria-pressed="true"] {
+  background: #293749;
+  border-color: #78aafb;
+  box-shadow: inset 0 0 0 1px #78aafb;
+  color: #fff;
+}
+.icon-color-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2px;
+  width: 29px;
+  min-height: 36px;
+  padding: 1px 0 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #a9b1bd;
+  font-size: 9px;
+  transition: transform .12s ease;
+}
+.icon-color-swatch {
+  display: block;
+  flex: none;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  border: 2px solid #1a1e23;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.23);
+}
+.icon-color-label {
+  display: block;
+  max-width: 29px;
+  line-height: 11px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.icon-color-choice:hover .icon-color-swatch { box-shadow: 0 0 0 2px #c0c6cf; }
+.icon-color-choice[aria-pressed="true"] .icon-color-swatch {
+  box-shadow: 0 0 0 2px #83b8ff;
+}
+.icon-color-choice[aria-pressed="true"] .icon-color-label {
+  color: #f0f4fb;
+  font-weight: 700;
+}
+.icon-editor { display: flex; flex-direction: column; gap: 4px; flex: none; border-top: 1px solid #333943; padding-top: 7px; }
+.icon-editor-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.icon-editor-field { display: flex; flex-direction: column; min-width: 0; gap: 5px; }
+.icon-editor label { color: #cdd1d8; font-weight: 600; font-size: 12px; margin: 0 2px; }
+#icon-code-input {
+  min-width: 0; width: 100%; height: 35px; padding: 7px 8px;
+  border: 1px solid #555c68; border-radius: 8px; outline: none;
+  background: #1a1d22; color: #f5f6f8;
+  font: 12px ui-monospace, "Cascadia Code", Consolas, monospace;
+}
+#icon-code-input:focus { border-color: #7dacf9; }
+#icon-code-input[aria-invalid="true"] { border-color: #e77777; }
+/* Hint and error share ONE line. Toggling them never changes popup height. */
+.icon-code-error, .icon-code-help {
+  margin: 0; height: 14px; font-size: 10px; line-height: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.icon-code-error { color: #ff9797; }
+.icon-code-help { color: #929aa6; }
+.icon-preview-content {
+  min-width: 0; height: 35px; padding: 6px 7px;
+  display: flex; align-items: center; gap: 3px;
+  overflow: hidden; white-space: nowrap;
+  border: 1px solid #373e48; border-radius: 8px; background: #1c2026;
+  font-size: 12px; color: #e8eaf0;
+}
+.icon-preview-group { display: inline-flex; gap: 2px; flex: none; align-items: center; }
+.icon-preview-group svg { display: block; flex: none; }
+.icon-preview-example { margin-left: 5px; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.icon-preview-empty { color: #8e97a5; font-size: 11px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.icon-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.icon-actions button { min-height: 32px; border: 1px solid #555d69; border-radius: 8px; background: #303640; color: #f2f4f7; font-weight: 600; }
+.icon-actions button:hover:not(:disabled) { background: #424a55; }
+#icon-copy { background: #36537a; border-color: #507bb5; }
+#icon-copy:hover:not(:disabled) { background: #406595; }
+#icon-copy.is-copied { background: #28523e; border-color: #4b9972; color: #e6fff0; }
+#icon-copy.is-failed { background: #65343a; border-color: #b36a74; color: #fff0f1; }
+/* Accessible status announcement, without taking space below the action buttons. */
+.icon-copy-status {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.icon-license { margin-top: 9px; font-size: 10px; color: #89919d; text-align: center; line-height: 1.2; }
+.icon-license a { color: #b2c9f0; text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) {
+  .icon-color-choice { transition: none; }
+}
+
+/* Displayed title icon fragments stay in the same text line and ellipsis box. */
+.ck-title-inline-icon {
+  width: 1em; height: 1em; display: inline-block;
+  vertical-align: -0.16em; margin-inline: 0.12em;
+}

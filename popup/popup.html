@@ -42,7 +42,36 @@
         </div>
       </section>
       <section id="panel-icons" class="panel" role="tabpanel" aria-labelledby="tab-icons" hidden>
-        <div class="placeholder" id="icons-placeholder"></div>
+        <div class="icon-workspace">
+          <div class="icon-catalog-group icon-icons-group">
+            <h2 id="icon-icons-heading"></h2>
+            <div class="icon-choices-scroll" id="icon-icons-list" role="group" aria-labelledby="icon-icons-heading"></div>
+          </div>
+          <div class="icon-catalog-group icon-colors-group">
+            <h2 id="icon-colors-heading"></h2>
+            <div class="icon-choices-scroll" id="icon-colors-list" role="group" aria-labelledby="icon-colors-heading"></div>
+          </div>
+          <div class="icon-editor">
+            <div class="icon-editor-row">
+              <div class="icon-editor-field">
+                <label for="icon-code-input" id="icon-code-label"></label>
+                <input type="text" id="icon-code-input" maxlength="1024" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="icon-code-error icon-code-help">
+              </div>
+              <div class="icon-editor-field icon-preview-field">
+                <h2 id="icon-preview-heading"></h2>
+                <div id="icon-preview-content" class="icon-preview-content" aria-live="polite"></div>
+              </div>
+            </div>
+            <p class="icon-code-error" id="icon-code-error" role="alert" hidden></p>
+            <p class="icon-code-help" id="icon-code-help"></p>
+            <div class="icon-actions">
+              <button type="button" id="icon-reset"></button>
+              <button type="button" id="icon-copy" disabled></button>
+            </div>
+            <div class="icon-copy-status" id="icon-copy-status" role="status" aria-live="polite"></div>
+            <div class="icon-license">Icons by Lucide Contributors · ISC/MIT · <a href="../third_party/lucide/LICENSE" target="_blank" rel="noopener noreferrer">License</a></div>
+          </div>
+        </div>
       </section>
     </main>
 
@@ -56,8 +85,12 @@
   </div>
   <script src="../ui/i18n.js"></script>
   <script src="../ui/icons.js"></script>
+  <script src="../ui/title-icon-catalog.js"></script>
+  <script src="../ui/title-code-syntax.js"></script>
+  <script src="../ui/title-renderer.js"></script>
   <script src="../core/backup.js"></script>
   <script src="popup-view.js"></script>
+  <script src="icons-tab.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

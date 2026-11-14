@@ -158,7 +158,7 @@
         link.className = "ck-chat";
         link.href = url;
         link.title = item.title;
-        link.textContent = item.title;
+        if (!ns.TitleRenderer.renderInto(link, item.title)) link.textContent = item.title;
         link.dataset.ckChatUrl = url;
         link.addEventListener("click", () => this.setActiveUrl(url));
 
